@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __redirect_alias_golang() {
+__redirect_alias_golang() {
     echo "'go@${WEBI_TAG:-stable}' is an alias for 'golang@${WEBI_VERSION:-}'"
     WEBI_HOST=${WEBI_HOST:-"https://webinstall.dev"}
-    curl -fsSL "$WEBI_HOST/golang@${WEBI_VERSION:-}" | bash
+    curl -fsSL "$WEBI_HOST/golang@${WEBI_VERSION:-}" | sh
 }
 
 __redirect_alias_golang

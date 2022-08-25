@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
 #shellcheck disable=SC1003
 
-function __init_vim_ale() {
+__init_vim_ale() {
     set -e
     set -u
 

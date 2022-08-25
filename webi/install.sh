@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
 # Note: 'webi' is a special case. It's actually just a helper utility that comes with every installer.
 #       See https://github.com/webinstall/packages/blob/master/_webi/bootstrap.sh for the source.
 
-function __faux_webi() {
+__faux_webi() {
 
     if [ -f "$HOME/.local/bin/webi" ]; then
         set +e

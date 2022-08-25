@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_xz() {
+__init_xz() {
 
     ##############
     # Install xz #
@@ -21,16 +21,16 @@ function __init_xz() {
     # pkg_install must be defined by every package
     pkg_install() {
         # ~/.local/opt/xz-v5.2.5/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./xz-*/{xz,xzdec} ~/.local/opt/xz-v5.2.5/bin/
-        mv ./xz-*/xz* "$(dirname $pkg_src_cmd)"
-        ln -s xz "$(dirname $pkg_src_cmd)/unxz"
+        mv ./xz-*/xz* "$(dirname "$pkg_src_cmd")"
+        ln -s xz "$(dirname "$pkg_src_cmd")/unxz"
     }
 
     pkg_post_install() {
         # supplements webi_link
-        ln -s xz "$(dirname $pkg_dst_cmd)/unxz"
+        ln -s xz "$(dirname "$pkg_dst_cmd")/unxz"
 
         webi_post_install
     }
@@ -42,7 +42,7 @@ function __init_xz() {
         #       liblzma 5.2.5
         # This trims it down to just the version number:
         #       5.2.5
-        echo $(xz --version 2> /dev/null | head -n 1 | cut -d ' ' -f 4)
+        xz --version 2> /dev/null | head -n 1 | cut -d ' ' -f 4
     }
 }
 

@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_lsd() {
+__init_lsd() {
 
     ###############
     # Install lsd #
@@ -21,7 +21,7 @@ function __init_lsd() {
     # pkg_install must be defined by every package
     pkg_install() {
         # ~/.local/opt/lsd-v0.17.0/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./lsd-*/lsd ~/.local/opt/lsd-v0.17.0/bin/lsd
         mv ./lsd-*/lsd "$pkg_src_cmd"
@@ -33,7 +33,7 @@ function __init_lsd() {
         #       lsd 0.17.0
         # This trims it down to just the version number:
         #       0.17.0
-        echo $(lsd --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2)
+        lsd --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2
     }
 
 }

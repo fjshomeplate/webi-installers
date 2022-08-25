@@ -1,14 +1,14 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __git_gpg_init() {
+__git_gpg_init() {
     export PATH="$HOME/.local/opt/gnupg/bin:$PATH"
     export PATH="$HOME/.local/opt/gnupg/bin/pinentry-mac.app/Contents/MacOS:$PATH"
 
     # TODO check for public key without gpg-pubkey?
     if ! command -v gpg-pubkey; then
-        webi gpg-pubkey
+        "$HOME/.local/bin/webi" gpg-pubkey
     else
         gpg-pubkey
     fi
@@ -17,11 +17,11 @@ function __git_gpg_init() {
         gpg-pubkey-id
     )"
 
-    echo -n "Enabling automatic git commit signing...
-	    git config --global user.signingkey ${MY_KEY_ID}
+    printf "Enabling automatic git commit signing...
+	    git config --global user.signingkey %s
 	    git config --global commit.gpgsign true
 	    git config --global log.showSignature true
-	"
+	" "${MY_KEY_ID}"
 
     git config --global user.signingkey "${MY_KEY_ID}"
     git config --global commit.gpgsign true

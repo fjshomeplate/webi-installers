@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-function __init_kind() {
+__init_kind() {
     set -e
     set -u
 

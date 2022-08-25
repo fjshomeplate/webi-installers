@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -u
 set -e
 
-function __install_iterm2_color_schemes() {
+__install_iterm2_color_schemes() {
     WEBI_HOST=${WEBI_HOST:-https://webinstall.dev}
 
     echo ''

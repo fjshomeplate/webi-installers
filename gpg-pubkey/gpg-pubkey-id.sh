@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function main() {
+main() {
     gpg --list-secret-keys --keyid-format LONG |
         grep sec |
         cut -d'/' -f2 |

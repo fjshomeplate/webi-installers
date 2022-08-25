@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_goreleaser() {
+__init_goreleaser() {
 
     ######################
     # Install goreleaser #
@@ -21,7 +21,7 @@ function __init_goreleaser() {
     # pkg_install must be defined by every package
     pkg_install() {
         # ~/.local/opt/goreleaser-v0.99.9/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./goreleaser-*/goreleaser ~/.local/opt/goreleaser-v0.99.9/bin/goreleaser
         mv ./goreleaser "$pkg_src_cmd"
@@ -33,7 +33,7 @@ function __init_goreleaser() {
         #       goreleaser 0.99.9 (rev abcdef0123)
         # This trims it down to just the version number:
         #       0.99.9
-        echo $(goreleaser --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2)
+        goreleaser --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2
     }
 
 }

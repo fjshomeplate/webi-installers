@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_ffmpeg() {
+__init_ffmpeg() {
 
     ##################
     # Install ffmpeg #
@@ -21,7 +21,7 @@ function __init_ffmpeg() {
     # pkg_install must be defined by every package
     pkg_install() {
         # ~/.local/opt/ffmpeg-v4.3.1/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./linux-x86 ~/.local/opt/ffmpeg-v4.3.1/bin/ffmpeg
         mv ./*-* "$pkg_src_cmd"
@@ -35,7 +35,7 @@ function __init_ffmpeg() {
         #       ...
         # This trims it down to just the version number:
         #       4.3.1
-        echo $(ffmpeg -version 2> /dev/null | head -n 1 | cut -d ' ' -f 3)
+        ffmpeg -version 2> /dev/null | head -n 1 | cut -d ' ' -f 3
     }
 
 }

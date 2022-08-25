@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __install_setcap_netbind() {
+__install_setcap_netbind() {
     # remove prior version, if exists
     rm -f ~/.local/bin/setcap-netbind
 

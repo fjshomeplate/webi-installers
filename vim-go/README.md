@@ -18,7 +18,7 @@ You'll also need to install [`ALE`](https://webinstall.dev/vim-ale) (part of
 
 ### How to install by hand
 
-```bash
+```sh
 git clone --depth=1 https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go
 ```
 
@@ -54,28 +54,36 @@ let g:go_highlight_build_constraints = 1
 
 ### How to install go language tools
 
-```bash
+via `vim` with `:GoInstallBinaries`:
+
+```sh
+printf ':GoInstallBinaries\n:q\n' | vim -e
+```
+
+via `sh`:
+
+```sh
 # gopls
-go get golang.org/x/tools/gopls
+go install golang.org/x/tools/gopls
 
 # golint
-go get golang.org/x/lint/golint
+go install golang.org/x/lint/golint
 
 # errcheck
-go get github.com/kisielk/errcheck
+go install github.com/kisielk/errcheck
 
 # gotags
-go get github.com/jstemmer/gotags
+go install github.com/jstemmer/gotags
 
 # goimports
-go get golang.org/x/tools/cmd/goimports
+go install golang.org/x/tools/cmd/goimports
 
 # gorename
-go get golang.org/x/tools/cmd/gorename
+go install golang.org/x/tools/cmd/gorename
 
 # goreturns
-go get github.com/sqs/goreturns
+go install github.com/sqs/goreturns
 
 # gotype
-go get golang.org/x/tools/cmd/gotype
+go install golang.org/x/tools/cmd/gotype
 ```

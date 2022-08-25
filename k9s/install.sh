@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_k9s() {
+__init_k9s() {
 
     ##################
     # Install k9s #
@@ -21,7 +21,7 @@ function __init_k9s() {
     # pkg_install must be defined by every package
     pkg_install() {
         # ~/.local/opt/k9s-v0.99.9/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./k9s-*/k9s ~/.local/opt/k9s-v0.99.9/bin/k9s
         mv k9s "$pkg_src_cmd"
@@ -37,7 +37,7 @@ function __init_k9s() {
 
         # This trims it down to just the version number:
         # 0.24.2
-        echo $(k9s version 2> /dev/null | grep Version: | cut -d 'v' -f 2)
+        k9s version 2> /dev/null | grep Version: | cut -d 'v' -f 2
     }
 
 }

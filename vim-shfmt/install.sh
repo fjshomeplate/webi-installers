@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-function __init_vim_shfmt() {
+__init_vim_shfmt() {
     set -e
     set -u
 
@@ -10,10 +10,10 @@ function __init_vim_shfmt() {
 
     export PATH="$HOME/.local/bin:${PATH}"
     if [ -z "$(command -v shfmt)" ]; then
-        webi shfmt
+        "$HOME/.local/bin/webi" shfmt
     fi
     if [ -z "$(command -v shellcheck)" ]; then
-        webi shellcheck
+        "$HOME/.local/bin/webi" shellcheck
     fi
 
     if [ ! -f "$HOME/.vimrc" ]; then

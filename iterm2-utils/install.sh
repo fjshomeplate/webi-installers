@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __iterm2_utils() {
+__iterm2_utils() {
     curl -fsSL https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash
 }
 

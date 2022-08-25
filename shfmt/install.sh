@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_shfmt() {
+__init_shfmt() {
 
     ##################
     # Install shfmt #
@@ -19,12 +19,12 @@ function __init_shfmt() {
 
     pkg_install() {
         # ~/.local/opt/shfmt-v0.99.9/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
         mv ./"$pkg_cmd_name"* "$pkg_src_cmd"
     }
 
     pkg_get_current_version() {
-        echo $(shfmt --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2)
+        shfmt --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2
     }
 
 }

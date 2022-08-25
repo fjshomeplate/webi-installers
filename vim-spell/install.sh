@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-function __init_vim_spell() {
+__init_vim_spell() {
     set -e
     set -u
 

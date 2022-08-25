@@ -9,8 +9,8 @@
 - no messing with system permissions
 - in short: no nonsense
 
-```bash
-curl https://webinstall.dev/webi | bash
+```sh
+curl https://webinstall.dev/webi | sh
 ```
 
 This repository contains the primary and community-submitted packages for
@@ -32,7 +32,7 @@ More technically:
    - common release APIs are in `_common/` (i.e. `_common/github.js`)
 2. `_webi/bootstrap.sh` is a template that exchanges system information for a
    correct installer
-   - contructs a user agent with os, cpu, and utility info (i.e. `macos`,
+   - constructs a user agent with os, cpu, and utility info (i.e. `macos`,
      `amd64`, can unpack `tar,zip,xz`)
 3. `_webi/template.sh` is the base installer template with common functions for
    - checking versions
@@ -42,9 +42,9 @@ More technically:
 4. `<package>/install.sh` may provide functions to override `_webi/template.sh`
 5. Recap:
    - `curl https://webinstall.dev/<pkg>` => `bootstrap-<pkg>.sh`
-   - `bash bootstrap-<pkg>.sh` =>
+   - `sh bootstrap-<pkg>.sh` =>
      `https://webinstall.dev/api/installers/<pkg>@<ver>.sh?formats=zip,tar`
-   - `bash install-<pkg>.sh` => download, unpack, move, link, update PATH
+   - `sh install-<pkg>.sh` => download, unpack, move, link, update PATH
 
 # Philosophy (for package authors / maintainers publishing with webi)
 
@@ -73,7 +73,7 @@ An install consists of 5 parts in 4 files:
 my-new-package/
   - README.md (package info in frontmatter)
   - releases.js
-  - install.sh (bash)
+  - install.sh (POSIX Shell)
   - install.ps1 (PowerShell)
 ```
 
@@ -88,7 +88,7 @@ See these **examples**:
 - https://github.com/webinstall/packages/blob/master/golang/
 
 The `webinstall.dev` server uses the list of releases returned by
-`<your-package>/releases.js` to generate a bash script with most necessary
+`<your-package>/releases.js` to generate a shell script with most necessary
 variables and functions pre-defined.
 
 You just fill in the blanks.
@@ -97,13 +97,13 @@ You just fill in the blanks.
 
 Just create an empty directory and run the tests until you get a good result.
 
-```bash
+```sh
 git clone git@github.com:webinstall/packages.git
 pushd packages
 npm install
 ```
 
-```bash
+```sh
 mkdir -p ./new-package/
 node _webi/test.js ./new-package/
 ```
@@ -124,7 +124,7 @@ description: |
   Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine
 ---
 
-```bash
+```sh
 node -e 'console.log("Hello, World!")'
 > Hello, World!
 ```
@@ -161,7 +161,7 @@ module.exports = function (request) {
 
 (optional, if needed) Bash variables that you _may_ define:
 
-```bash
+```sh
 # Define this if the package name is different from the command name (i.e. golang => go)
 pkg_cmd_name="foobar"
 
@@ -178,16 +178,16 @@ pkg_src_cmd="$HOME/.local/opt/foobar-v$WEBI_VERSION/bin/foobar"
 
 (required) A version check function that strips all non-version junk
 
-```bash
+```sh
 pkg_get_current_version() {
     # foobar-v1.1.7 => 1.1.7
     echo "$(foobar --version | head -n 1 | sed 's:foobar-v::')"
 }
 ```
 
-For the rest of the functions you can like copy/paste from the examples:
+For the rest of the functions you can copy/paste from the examples:
 
-```bash
+```sh
 pkg_format_cmd_version() {}         # Override, pretty prints version
 
 pkg_link                            # Override, replaces webi_link()
@@ -214,7 +214,7 @@ See `webi/template.sh`
 
 These variables will be set by the server:
 
-```bash
+```sh
 WEBI_PKG=example@v1
 WEBI_TAG=v1
 WEBI_HOST=https://webinstall.dev
@@ -231,19 +231,19 @@ WEBI_PKG_URL=https://cdn.example.com/example-macos-amd64.tar.gz
 WEBI_PKG_FILE=example-macos-amd64.tar.gz
 ```
 
-```bash
+```sh
 PKG_NAME=example
 PKG_OSES=macos,linux,windows
 PKG_ARCHES=amd64,arm64,x86
 PKG_FORMATS=zip,xz
 ```
 
-```bash
+```sh
 WEBI_TMP=${WEBI_TMP:-"$(mktemp -d -t webinstall-foobar.XXXXXXXX)"}
 WEBI_SINGLE=""
 ```
 
-```bash
+```sh
 webi_check              # Checks to see if the selected version is already installed (and re-links if so)
 webi_download           # Downloads the selected release to $HOME/Downloads/webi/<package-name>.tar.gz
 webi_extract            # Extracts the download to /tmp/<package-name>-<random>/
@@ -270,7 +270,7 @@ webi_post_install       # Runs `webi_path_add $pkg_dst_bin`
 set WEBI_HOST=https://webinstall.dev
 ```
 
-Windows 10 has curl too!?
+Windows has curl too!?
 
 ```bat
 curl.exe -sL -A "MS" https://webinstall.dev/node | powershell

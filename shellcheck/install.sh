@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-function __init_shellcheck() {
+__init_shellcheck() {
     set -e
     set -u
 
@@ -21,7 +21,7 @@ function __init_shellcheck() {
     # pkg_install must be defined by every package
     pkg_install() {
         # ~/.local/opt/shellcheck-v0.99.9/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./shellcheck-*/shellcheck ~/.local/opt/shellcheck-v0.99.9/bin/shellcheck
         mv ./shellcheck-*/shellcheck "$pkg_src_cmd"
@@ -37,7 +37,7 @@ function __init_shellcheck() {
 
         # This trims it down to just the version number:
         #       0.7.1
-        echo $(shellcheck --version 2> /dev/null | head -n 2 | tail -n 1 | cut -d' ' -f 2)
+        shellcheck --version 2> /dev/null | head -n 2 | tail -n 1 | cut -d' ' -f 2
     }
 
 }

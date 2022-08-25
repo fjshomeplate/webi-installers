@@ -7,7 +7,7 @@ tagline: |
 
 ## Updating `webi`
 
-```bash
+```sh
 webi webi
 ```
 
@@ -26,14 +26,14 @@ Since `webi` is just a small helper script, it always updates on each use.
 
 You can install _exactly_ what you need, from memory, via URL:
 
-```bash
-curl https://webinstall.dev/node@lts | bash
+```sh
+curl https://webinstall.dev/node@lts | sh
 ```
 
-Or via `webi`, the tiny `curl | bash` shortcut command that comes with each
+Or via `webi`, the tiny `curl | sh` shortcut command that comes with each
 install:
 
-```bash
+```sh
 webi node@lts golang@stable flutter@beta rustlang
 ```
 
@@ -41,13 +41,13 @@ webi node@lts golang@stable flutter@beta rustlang
 
 You can see exactly what PATHs have been edited:
 
-```bash
+```sh
 pathman list
 ```
 
 And where:
 
-```bash
+```sh
 cat ~/.config/envman/PATH.env
 ```
 
@@ -55,13 +55,13 @@ cat ~/.config/envman/PATH.env
 
 These are the files that are installed when you use [webinstall.dev](/):
 
-```bash
+```sh
 # Mac, Linux
 ~/.local/bin/webi
 ~/.local/bin/pathman
 ~/.local/opt/pathman-*
 
-# Windows 10
+# Windows
 ~/.local/bin/webi.cmd
 ~/.local/bin/webi-pwsh.ps1
 ~/.local/bin/pathman.exe
@@ -74,7 +74,7 @@ reinstalled.
 
 Additionally, these files may be modified to update your `PATH`:
 
-```bash
+```sh
 ~/.bashrc
 ~/.profile
 ~/.config/fish/config.fish
@@ -97,7 +97,7 @@ just check the Cheat Sheet for any special notes.
 
 Here are some examples:
 
-```bash
+```sh
 # Remove jq
 rm -rf ~/.local/bin/jq
 rm -rf ~/.local/jq-*/

@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __install_ssh_utils() {
+__install_ssh_utils() {
     rm -f \
         "$HOME/.local/bin/ssh-pubkey" \
         "$HOME/.local/bin/ssh-setpass" \

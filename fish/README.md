@@ -40,7 +40,7 @@ This also covers how to
 A bash script should have a "bash shebang" (`#!/bin/bash`) as the first line of
 the file:
 
-```bash
+```sh
 #!/bin/bash
 
 echo "Who am I? I'm $(whoami)."
@@ -48,7 +48,7 @@ echo "Who am I? I'm $(whoami)."
 
 You can also run bash explicitly:
 
-```bash
+```sh
 bash ./some-script.sh
 ```
 
@@ -57,7 +57,7 @@ bash ./some-script.sh
 You may like to have your `fish` theme match your Terminal or iTerm2 theme (such
 as _Solarized_, _Dracula_, or _Tomorrow Night_).
 
-```bash
+```sh
 fish_config colors
 ```
 
@@ -78,28 +78,28 @@ use the Terminal-specific methods.
 
 First, `fish` must be installed and in the `PATH`.
 
-```bash
+```sh
 # if you don't see a file path as output, fish is not in the path
-which fish
+command -v fish
 ```
 
 Second, fish must be in the system-approved list of shells in `/etc/shells`:
 
-```bash
-#!/bin/bash
+```sh
+#!/bin/sh
 
-if ! grep $(which fish) /etc/shells > /dev/null; then
-    sudo bash -c "echo '$(which fish)' >> /etc/shells";
-    echo "added '$(which fish)' to /etc/shells"
+if ! grep $(command -v fish) /etc/shells > /dev/null; then
+    sudo sh -c "echo '$(command -v fish)' >> /etc/shells";
+    echo "added '$(command -v fish)' to /etc/shells"
 fi
 ```
 
 You should use `chsh` to change your shell:
 
-```bash
-#!/bin/bash
+```sh
+#!/bin/sh
 
-sudo chsh -s "$(which fish)" "$(whoami)"
+sudo chsh -s "$(command -v fish)" "$(whoami)"
 ```
 
 If vim uses `fish` instead of `bash`, annoying errors will happen.
@@ -115,8 +115,8 @@ You can also set is as the default for a particular Terminal, or for your user.
 
 Find out where `fish` is:
 
-```bash
-which fish
+```sh
+command -v fish
 ```
 
 Then update the Terminal preferences:
@@ -130,8 +130,8 @@ Terminal > Preferences > General > Shells open with:
 
 Or, you can quit Terminal and change the preferences from the command line:
 
-```bash
-#!/bin/bash
+```sh
+#!/bin/sh
 
 defaults write com.apple.Terminal "Shell" -string "$HOME/.local/bin/fish"
 ```
@@ -140,8 +140,8 @@ defaults write com.apple.Terminal "Shell" -string "$HOME/.local/bin/fish"
 
 Find out where `fish` is:
 
-```bash
-which fish
+```sh
+command -v fish
 ```
 
 Then update iTerm2 preferences:
@@ -155,8 +155,8 @@ Custom Shell: /Users/YOUR_USER/.local/bin/fish
 
 Or, you can quit iTerm2 and change the preferences from the command line:
 
-```bash
-#!/bin/bash
+```sh
+#!/bin/sh
 
 /usr/libexec/PlistBuddy -c "SET ':New Bookmarks:0:Custom Command' 'Custom Shell'" \
     ~/Library/Preferences/com.googlecode.iterm2.plist
@@ -193,8 +193,8 @@ shell:
 
 If you don't yet have an alacritty config, this will do:
 
-```bash
-#!/bin/bash
+```sh
+#!/bin/sh
 
 mkdir -p ~/.config/alacritty
 
@@ -213,13 +213,13 @@ The default `alacritty.yml` is included as an _asset_ with each
 
 Fish will be installed to the standard user location:
 
-```bash
+```sh
 ~/.local/opt/fish/
 ```
 
 It's config will also go in the standard user location:
 
-```bash
+```sh
 ~/.config/fish/config.fish
 ```
 

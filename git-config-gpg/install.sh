@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __install_git_gpg_init() {
+__install_git_gpg_init() {
     MY_CMD="git-config-gpg"
 
     rm -f "$HOME/.local/bin/$MY_CMD"
@@ -10,17 +10,17 @@ function __install_git_gpg_init() {
     chmod a+x "$HOME/.local/bin/$MY_CMD"
 }
 
-function __check_gpg_pubkey_exists() {
+__check_gpg_pubkey_exists() {
     if ! command -v gpg; then
-        webi gpg-pubkey
+        "$HOME/.local/bin/webi" gpg-pubkey
         export PATH="$HOME/.local/opt/gnupg/bin:$PATH"
         export PATH="$HOME/.local/opt/gnupg/bin/pinentry-mac.app/Contents/MacOS:$PATH"
     fi
 }
 
-function __check_gpg_exists() {
+__check_gpg_exists() {
     if ! command -v gpg; then
-        webi gpg
+        "$HOME/.local/bin/webi" gpg
         export PATH="$HOME/.local/opt/gnupg/bin:$PATH"
         export PATH="$HOME/.local/opt/gnupg/bin/pinentry-mac.app/Contents/MacOS:$PATH"
     fi

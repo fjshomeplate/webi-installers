@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-function __init_gh() {
+__init_gh() {
     set -e
     set -u
 
@@ -21,7 +21,7 @@ function __init_gh() {
     # pkg_install must be defined by every package
     pkg_install() {
         # ~/.local/opt/gh-v0.99.9/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./gh-*/gh ~/.local/opt/gh-v0.99.9/bin/gh
         mv ./"$pkg_cmd_name"*/bin/gh "$pkg_src_cmd"
@@ -33,7 +33,7 @@ function __init_gh() {
         #       gh 0.99.9 (rev abcdef0123)
         # This trims it down to just the version number:
         #       0.99.9
-        echo $(gh --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2)
+        gh --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2
     }
 
 }

@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-function __init_dashmsg() {
+__init_dashmsg() {
     set -e
     set -u
 
@@ -20,7 +20,7 @@ function __init_dashmsg() {
 
     pkg_install() {
         # $HOME/.local/opt/dashmsg-v0.9.0/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./dashmsg* "$HOME/.local/opt/dashmsg-v0.9.0/bin/dashmsg"
         mv ./"$pkg_cmd_name"* "$pkg_src_cmd"
@@ -34,7 +34,7 @@ function __init_dashmsg() {
         #       dashmsg v0.9.0 (6d73209) 2022-03-12T09:07:43Z
         # This trims it down to just the version number:
         #       0.9.0
-        echo "$(dashmsg --version 2> /dev/null | head -n 1 | cut -d' ' -f2 | sed 's:^v::')"
+        dashmsg --version 2> /dev/null | head -n 1 | cut -d' ' -f2 | sed 's:^v::'
     }
 
 }

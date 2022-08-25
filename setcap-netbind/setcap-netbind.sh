@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function main() {
+main() {
     my_bin="${1}"
     # ex: node
     if [ -z "$(command -v "${my_bin}")" ]; then

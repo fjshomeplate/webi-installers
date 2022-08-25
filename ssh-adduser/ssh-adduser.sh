@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function main() {
+main() {
 
     # Add User 'app'
     # Picking 'app' by common convention (what Docker & Vagrant use).
@@ -10,18 +10,18 @@ function main() {
     #my_existing_user="${2:-"root"}"
 
     # TODO would $EUID be better?
-    if [[ "root" != "$(whoami)" ]]; then
+    if [ "root" != "$(whoami)" ]; then
         echo "webi adduser: running user is already a non-root user"
         exit 0
     fi
 
-    if [[ ! -e ~/.ssh/authorized_keys ]] || ! grep -v '#' ~/.ssh/authorized_keys; then
+    if [ ! -e ~/.ssh/authorized_keys ] || ! grep -v '#' ~/.ssh/authorized_keys; then
         echo ""
         echo "Error:"
         echo "    You must add a key to ~/.ssh/authorized_keys before adding a new ssh user."
         echo ""
         echo "To fix:"
-        echo "    Run 'curl https://webinstall.dev/ssh-pubkey | bash' on your local system, "
+        echo "    Run 'curl https://webinstall.dev/ssh-pubkey | sh' on your local system, "
         echo "    then add that key to ~/.ssh/authorized_keys on this (the remote) system.  "
         echo ""
         exit 1
@@ -45,31 +45,31 @@ function main() {
     chown -R "$my_new_user":"$my_new_user" "/home/$my_new_user/.ssh/"
 
     # ensure that 'app' has an SSH Keypair
-    sudo -i -u "$my_new_user" bash -c "ssh-keygen -b 2048 -t rsa -f '/home/$my_new_user/.ssh/id_rsa' -q -N ''"
+    sudo -i -u "$my_new_user" sh -c "ssh-keygen -b 2048 -t rsa -f '/home/$my_new_user/.ssh/id_rsa' -q -N ''"
     chown -R "$my_new_user":"$my_new_user" "/home/$my_new_user/.ssh/"
 
     # Install webi for the new 'app' user
     WEBI_HOST=${WEBI_HOST:-"https://webinstall.dev"}
-    sudo -i -u "$my_new_user" bash -c "curl -fsSL '$WEBI_HOST/webi' | bash" ||
-        sudo -i -u "$my_new_user" bash -c "wget -q -O - '$WEBI_HOST/webi' | bash"
+    sudo -i -u "$my_new_user" sh -c "curl -fsSL '$WEBI_HOST/webi' | sh" ||
+        sudo -i -u "$my_new_user" sh -c "wget -q -O - '$WEBI_HOST/webi' | sh"
 
     # TODO ensure that ssh-password login is off
     my_pass="$(grep 'PasswordAuthentication yes' /etc/ssh/sshd_config)"
     my_pam=""
-    if [[ "Darwin" == "$(uname -s)" ]]; then
+    if [ "Darwin" = "$(uname -s)" ]; then
         # Turn off PAM for macOS or it will allow password login
         my_pam="$(grep 'UsePAM yes' /etc/ssh/sshd_config)"
     fi
-    if [[ -n ${my_pass} ]] || [[ -n ${my_pam} ]]; then
+    if [ -n "${my_pass}" ] || [ -n "${my_pam}" ]; then
         echo "######################################################################"
         echo "#                                                                    #"
         echo "#                             WARNING                                #"
         echo "#                                                                    #"
         echo "# Found /etc/ssh/sshd_config:                                        #"
-        if [[ -n ${my_pass} ]]; then
+        if [ -n "${my_pass}" ]; then
             echo "#     PasswordAuthentication yes                                     #"
         fi
-        if [[ -n ${my_pam} ]]; then
+        if [ -n "${my_pam}" ]; then
             echo "#     UsePAM yes                                                     #"
         fi
         echo "#                                                                    #"

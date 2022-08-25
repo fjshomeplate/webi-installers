@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_curlie() {
+__init_curlie() {
 
     ##################
     # Install curlie #
@@ -12,12 +12,10 @@ function __init_curlie() {
 
     pkg_get_current_version() {
         # 'curlie --version' has output in this format:
-        #       TODO
+        #       curlie 1.6.9 (2022-04-04T15:04:20Z)
         # This trims it down to just the version number:
-        #       TODO
-        #echo $(curlie --version 2>/dev/null | head -n 1 | cut -d' ' -f 2)
-        # See https://github.com/rs/curlie/issues/22
-        echo "0.0.0"
+        #       1.6.9
+        curlie version 2> /dev/null | head -n 1 | cut -d' ' -f 2
     }
 
     pkg_install() {

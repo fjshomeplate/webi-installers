@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_chromedriver() {
+__init_chromedriver() {
 
     ########################
     # Install chromedriver #
@@ -21,7 +21,7 @@ function __init_chromedriver() {
     # pkg_install must be defined by every package
     pkg_install() {
         # ~/.local/opt/chromedriver-v88.0.4324.96/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./chromedriver-*/chromedriver ~/.local/opt/chromedriver-v88.0.4324.96/bin/chromedriver
         mv ./chromedriver* "$pkg_src_cmd"
@@ -33,7 +33,7 @@ function __init_chromedriver() {
         #       ChromeDriver 88.0.4324.96 (68dba2d8a0b149a1d3afac56fa74648032bcf46b-refs/branch-heads/4324@{#1784})
         # This trims it down to just the version number:
         #       88.0.4324.96
-        echo $(chromedriver --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2)
+        chromedriver --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2
     }
 
 }

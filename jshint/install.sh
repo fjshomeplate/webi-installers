@@ -1,13 +1,13 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_jshint() {
+__init_jshint() {
     OLD_PATH="${PATH}"
     PATH="${HOME}/.local/opt/node/bin:${PATH}"
     if [ -z "$(npm --version 2> /dev/null)" ]; then
         export PATH="${OLD_PATH}"
-        webi node
+        "$HOME/.local/bin/webi" node
         export PATH="${HOME}/.local/opt/node/bin:${PATH}"
     fi
     npm install -g jshint@latest

@@ -1,15 +1,15 @@
-#!/bin/bash
+#!/bin/sh
 
 #set -x
 
-function __install_webi() {
+__install_webi() {
 
     #WEBI_PKG=
     #WEBI_HOST=https://webinstall.dev
     export WEBI_HOST
 
     echo ""
-    printf "Thanks for using webi to install '\e[32m${WEBI_PKG:-}\e[0m' on '\e[31m$(uname -s)/$(uname -m)\e[0m'.\n"
+    printf "Thanks for using webi to install '\e[32m%s\e[0m' on '\e[31m%s/%s\e[0m'.\n" "${WEBI_PKG:-}" "$(uname -s)" "$(uname -m)"
     echo "Have a problem? Experience a bug? Please let us know:"
     echo "        https://github.com/webinstall/webi-installers/issues"
     echo ""
@@ -26,15 +26,15 @@ function __install_webi() {
     mkdir -p "$HOME/.local/bin"
 
     cat << EOF > "$HOME/.local/bin/webi"
-#!/bin/bash
+#!/bin/sh
 
 set -e
 set -u
 #set -x
 
-function __webi_main () {
+__webi_main() {
 
-    export WEBI_TIMESTAMP=\$(date +%F_%H-%M-%S)
+    export WEBI_TIMESTAMP="\$(date +%F_%H-%M-%S)"
     export _webi_tmp="\${_webi_tmp:-\$(mktemp -d -t webi-\$WEBI_TIMESTAMP.XXXXXXXX)}"
 
     if [ -n "\${_WEBI_PARENT:-}" ]; then
@@ -90,7 +90,7 @@ function __webi_main () {
     export WEBI_UA="\$(uname -a)"
 
 
-    function webinstall() {
+    webinstall() {
 
         my_package="\${1:-}"
         if [ -z "\$my_package" ]; then
@@ -116,9 +116,10 @@ function __webi_main () {
         fi
         set -e
 
-        pushd "\$WEBI_BOOT" 2>&1 > /dev/null
-            bash "\$my_package-bootstrap.sh"
-        popd 2>&1 > /dev/null
+        (
+            cd "\$WEBI_BOOT"
+            sh "\$my_package-bootstrap.sh"
+        )
 
         rm -rf "\$WEBI_BOOT"
 
@@ -130,14 +131,13 @@ function __webi_main () {
             if [ -f "\$_webi_tmp/.PATH.env" ]; then
                 my_paths=\$(cat "\$_webi_tmp/.PATH.env" | sort -u)
                 if [ -n "\$my_paths" ]; then
-                    echo "IMPORTANT: You must update you PATH to use the installed program(s)"
-                    echo ""
-                    echo "You can either"
-                    echo "A) can CLOSE and REOPEN Terminal or"
-                    echo "B) RUN these exports:"
-                    echo ""
-                    echo "\$my_paths"
-                    echo ""
+                    printf 'PATH.env updated with:\\n'
+                    printf "%s\\n" "\$my_paths"
+                    printf '\\n'
+                    printf "\\e[31mTO FINISH\\e[0m: copy, paste & run the following command:\\n"
+                    printf "\\n"
+                    printf "        \\e[34msource ~/.config/envman/PATH.env\\e[0m\\n"
+                    printf "        (newly opened terminal windows will update automatically)\\n"
                 fi
                 rm -f "\$_webi_tmp/.PATH.env"
             fi
@@ -145,14 +145,14 @@ function __webi_main () {
 
     }
 
-    function version() {
+    version() {
         my_version=v1.1.15
         printf "\\e[31mwebi\\e[32m %s\\e[0m Copyright 2020+ AJ ONeal\\n" "\${my_version}"
         printf "    \\e[34mhttps://webinstall.dev/webi\\e[0m\\n"
     }
 
     # show help if no params given or help flags are used
-    function usage() {
+    usage() {
         echo ""
         version
         echo ""
@@ -183,12 +183,12 @@ function __webi_main () {
         echo ""
     }
 
-    if [[ \$# -eq 0 ]] || [[ "\$1" =~ ^(-V|--version|version)$ ]]; then
+    if [ \$# -eq 0 ] || echo "\$1" | grep -q -E '^(-V|--version|version)$'; then
         version
         exit 0
     fi
 
-    if [[ "\$1" =~ ^(-h|--help|help)$ ]]; then
+    if echo "\$1" | grep -q -E '^(-h|--help|help)$'; then
         usage "\$@"
         exit 0
     fi
@@ -208,7 +208,7 @@ EOF
 
     chmod a+x "$HOME/.local/bin/webi"
 
-    if [[ -n ${WEBI_PKG:-} ]]; then
+    if [ -n "${WEBI_PKG:-}" ]; then
         "$HOME/.local/bin/webi" "${WEBI_PKG}"
     else
         echo ""

@@ -1,10 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-# shellcheck disable=2001
-# because I prefer to use sed rather than bash replace
-# (there's too little space in my head to learn both syntaxes)
-
-function __bootstrap_webi() {
+__bootstrap_webi() {
 
     set -e
     set -u
@@ -86,7 +82,7 @@ function __bootstrap_webi() {
             return 0
         fi
 
-        if [ -n "$WEBI_SINGLE" ] || [ "single" == "${1:-}" ]; then
+        if [ -n "$WEBI_SINGLE" ] || [ "single" = "${1:-}" ]; then
             rm -rf "$pkg_dst_cmd"
             ln -s "$pkg_src_cmd" "$pkg_dst_cmd"
         else
@@ -118,9 +114,9 @@ function __bootstrap_webi() {
             # but that's okay, 'cmp -s' is good enough for us
             if cmp -s "${pkg_src_cmd}" "${my_current_cmd}"; then
                 echo "${my_canonical_name} already installed:"
-                echo -n "    ${pkg_dst}"
-                if [[ ${pkg_src_cmd} != "${my_current_cmd}" ]]; then
-                    echo -n " => ${pkg_src}"
+                printf "    %s" "${pkg_dst}"
+                if [ "${pkg_src_cmd}" != "${my_current_cmd}" ]; then
+                    printf " => %s" "${pkg_src}"
                 fi
                 echo ""
                 exit 0
@@ -137,13 +133,27 @@ function __bootstrap_webi() {
         export PATH="$my_path"
     }
 
+    is_interactive_shell() {
+        # $- shows shell flags (error,unset,interactive,etc)
+        case $- in
+            *i*)
+                # true
+                return 0
+                ;;
+            *)
+                # false
+                return 1
+                ;;
+        esac
+    }
+
     # detect if file is downloaded, and how to download it
     webi_download() {
         # determine the url to download
         if [ -n "${1:-}" ]; then
             my_url="$1"
         else
-            if [ "error" == "$WEBI_CHANNEL" ]; then
+            if [ "error" = "$WEBI_CHANNEL" ]; then
                 # TODO pass back requested OS / Arch / Version
                 echo >&2 "Error: no '$PKG_NAME' release for '${WEBI_OS:-}' on '$WEBI_ARCH' as one of '$WEBI_FORMATS' by the tag '${WEBI_TAG:-}'"
                 echo >&2 "       '$PKG_NAME' is available for '$PKG_OSES' on '$PKG_ARCHES' as one of '$PKG_FORMATS'"
@@ -181,7 +191,7 @@ function __bootstrap_webi() {
             # TODO wget -c --content-disposition "$my_url"
             set +e
             my_show_progress=""
-            if [[ $- == *i* ]]; then
+            if is_interactive_shell; then
                 my_show_progress="--show-progress"
             fi
             if ! wget -q $my_show_progress --user-agent="wget $WEBI_UA" -c "$my_url" -O "$my_dl.part"; then
@@ -193,7 +203,7 @@ function __bootstrap_webi() {
             # Neither GNU nor BSD curl have sane resume download options, hence we don't bother
             # TODO curl -fsSL --remote-name --remote-header-name --write-out "$my_url"
             my_show_progress="-#"
-            if [[ $- == *i* ]]; then
+            if is_interactive_shell; then
                 my_show_progress=""
             fi
             # shellcheck disable=SC2086
@@ -208,25 +218,26 @@ function __bootstrap_webi() {
 
     # detect which archives can be used
     webi_extract() {
-        pushd "$WEBI_TMP" > /dev/null 2>&1
-        if [ "tar" == "$WEBI_EXT" ]; then
-            echo "Extracting ${WEBI_PKG_PATH}/$WEBI_PKG_FILE"
-            tar xf "${WEBI_PKG_PATH}/$WEBI_PKG_FILE"
-        elif [ "zip" == "$WEBI_EXT" ]; then
-            echo "Extracting ${WEBI_PKG_PATH}/$WEBI_PKG_FILE"
-            unzip "${WEBI_PKG_PATH}/$WEBI_PKG_FILE" > __unzip__.log
-        elif [ "exe" == "$WEBI_EXT" ]; then
-            echo "Moving ${WEBI_PKG_PATH}/$WEBI_PKG_FILE"
-            mv "${WEBI_PKG_PATH}/$WEBI_PKG_FILE" .
-        elif [ "xz" == "$WEBI_EXT" ]; then
-            echo "Inflating ${WEBI_PKG_PATH}/$WEBI_PKG_FILE"
-            unxz -c "${WEBI_PKG_PATH}/$WEBI_PKG_FILE" > "$(basename "$WEBI_PKG_FILE")"
-        else
-            # do nothing
-            echo "Failed to extract ${WEBI_PKG_PATH}/$WEBI_PKG_FILE"
-            exit 1
-        fi
-        popd > /dev/null 2>&1
+        (
+            cd "$WEBI_TMP"
+            if [ "tar" = "$WEBI_EXT" ]; then
+                echo "Extracting ${WEBI_PKG_PATH}/$WEBI_PKG_FILE"
+                tar xf "${WEBI_PKG_PATH}/$WEBI_PKG_FILE"
+            elif [ "zip" = "$WEBI_EXT" ]; then
+                echo "Extracting ${WEBI_PKG_PATH}/$WEBI_PKG_FILE"
+                unzip "${WEBI_PKG_PATH}/$WEBI_PKG_FILE" > __unzip__.log
+            elif [ "exe" = "$WEBI_EXT" ]; then
+                echo "Moving ${WEBI_PKG_PATH}/$WEBI_PKG_FILE"
+                mv "${WEBI_PKG_PATH}/$WEBI_PKG_FILE" .
+            elif [ "xz" = "$WEBI_EXT" ]; then
+                echo "Inflating ${WEBI_PKG_PATH}/$WEBI_PKG_FILE"
+                unxz -c "${WEBI_PKG_PATH}/$WEBI_PKG_FILE" > "$(basename "$WEBI_PKG_FILE")"
+            else
+                # do nothing
+                echo "Failed to extract ${WEBI_PKG_PATH}/$WEBI_PKG_FILE"
+                exit 1
+            fi
+        )
     }
 
     # use 'pathman' to update $HOME/.config/envman/PATH.env
@@ -244,8 +255,12 @@ function __bootstrap_webi() {
 
         # in case pathman was recently installed and the PATH not updated
         mkdir -p "$_webi_tmp"
-        # prevent "too few arguments" output on bash when there are 0 lines of stdout
-        "$HOME/.local/bin/pathman" add "$1" | grep "export" 2> /dev/null >> "$_webi_tmp/.PATH.env" || true
+        # 'true' to prevent "too few arguments" output
+        # when there are 0 lines of stdout
+        "$HOME/.local/bin/pathman" add "$1" |
+            grep "export" 2> /dev/null \
+                >> "$_webi_tmp/.PATH.env" ||
+            true
     }
 
     # group common pre-install tasks as default
@@ -259,7 +274,7 @@ function __bootstrap_webi() {
     # shellcheck disable=2120
     # webi_install may be sourced and used elsewhere
     webi_install() {
-        if [ -n "$WEBI_SINGLE" ] || [ "single" == "${1:-}" ]; then
+        if [ -n "$WEBI_SINGLE" ] || [ "single" = "${1:-}" ]; then
             mkdir -p "$(dirname "$pkg_src_cmd")"
             mv ./"$pkg_cmd_name"* "$pkg_src_cmd"
         else
@@ -313,9 +328,9 @@ function __bootstrap_webi() {
 
     WEBI_SINGLE=
 
-    if [[ -z ${WEBI_WELCOME:-} ]]; then
+    if [ -z "${WEBI_WELCOME:-}" ]; then
         echo ""
-        printf "Thanks for using webi to install '\e[32m${WEBI_PKG:-}\e[0m' on '\e[31m$(uname -s)/$(uname -m)\e[0m'.\n"
+        printf "Thanks for using webi to install '\e[32m%s\e[0m' on '\e[31m%s/%s\e[0m'.\n" "${WEBI_PKG:-}" "$(uname -s)" "$(uname -m)"
         echo "Have a problem? Experience a bug? Please let us know:"
         echo "        https://github.com/webinstall/webi-installers/issues"
         echo ""
@@ -324,10 +339,10 @@ function __bootstrap_webi() {
         echo ""
     fi
 
-    function __init_installer() {
+    __init_installer() {
 
         # do nothing - to satisfy parser prior to templating
-        echo -n ""
+        printf ""
 
         # {{ installer }}
 
@@ -347,14 +362,14 @@ function __bootstrap_webi() {
         command -v pkg_post_install > /dev/null ||
         command -v pkg_done_message > /dev/null ||
         command -v pkg_format_cmd_version > /dev/null ||
-        [[ -n ${WEBI_SINGLE:-} ]] ||
-        [[ -n ${pkg_cmd_name:-} ]] ||
-        [[ -n ${pkg_dst_cmd:-} ]] ||
-        [[ -n ${pkg_dst_dir:-} ]] ||
-        [[ -n ${pkg_dst:-} ]] ||
-        [[ -n ${pkg_src_cmd:-} ]] ||
-        [[ -n ${pkg_src_dir:-} ]] ||
-        [[ -n ${pkg_src:-} ]]; then
+        [ -n "${WEBI_SINGLE:-}" ] ||
+        [ -n "${pkg_cmd_name:-}" ] ||
+        [ -n "${pkg_dst_cmd:-}" ] ||
+        [ -n "${pkg_dst_dir:-}" ] ||
+        [ -n "${pkg_dst:-}" ] ||
+        [ -n "${pkg_src_cmd:-}" ] ||
+        [ -n "${pkg_src_dir:-}" ] ||
+        [ -n "${pkg_src:-}" ]; then
 
         pkg_cmd_name="${pkg_cmd_name:-$PKG_NAME}"
 
@@ -378,36 +393,45 @@ function __bootstrap_webi() {
         # shellcheck disable=SC2034
         pkg_dst_bin="$(dirname "$pkg_dst_cmd")"
 
-        if [[ -n "$(command -v pkg_pre_install)" ]]; then pkg_pre_install; else webi_pre_install; fi
+        if [ -n "$(command -v pkg_pre_install)" ]; then pkg_pre_install; else webi_pre_install; fi
 
-        pushd "$WEBI_TMP" > /dev/null 2>&1
-        echo "Installing to $pkg_src_cmd"
-        if [[ -n "$(command -v pkg_install)" ]]; then pkg_install; else webi_install; fi
-        chmod a+x "$pkg_src"
-        chmod a+x "$pkg_src_cmd"
-        popd > /dev/null 2>&1
+        (
+            cd "$WEBI_TMP"
+            echo "Installing to $pkg_src_cmd"
+            if [ -n "$(command -v pkg_install)" ]; then pkg_install; else webi_install; fi
+            chmod a+x "$pkg_src"
+            chmod a+x "$pkg_src_cmd"
+        )
 
         webi_link
 
         _webi_enable_exec
-        pushd "$WEBI_TMP" > /dev/null 2>&1
-        if [[ -n "$(command -v pkg_post_install)" ]]; then pkg_post_install; else webi_post_install; fi
-        popd > /dev/null 2>&1
+        (
+            cd "$WEBI_TMP"
+            if [ -n "$(command -v pkg_post_install)" ]; then pkg_post_install; else webi_post_install; fi
+        )
 
-        pushd "$WEBI_TMP" > /dev/null 2>&1
-        if [[ -n "$(command -v pkg_done_message)" ]]; then pkg_done_message; else _webi_done_message; fi
-        popd > /dev/null 2>&1
+        (
+            cd "$WEBI_TMP"
+            if [ -n "$(command -v pkg_done_message)" ]; then pkg_done_message; else _webi_done_message; fi
+        )
 
         echo ""
     fi
 
     webi_path_add "$HOME/.local/bin"
-    if [[ -z ${_WEBI_CHILD:-} ]] && [[ -f "$_webi_tmp/.PATH.env" ]]; then
-        if [[ -n $(cat "$_webi_tmp/.PATH.env") ]]; then
-            echo "You need to update your PATH to use $PKG_NAME:"
-            echo ""
+    if [ -z "${_WEBI_CHILD:-}" ] && [ -f "$_webi_tmp/.PATH.env" ]; then
+        if [ -n "$(cat "$_webi_tmp/.PATH.env")" ]; then
+            printf 'PATH.env updated with:\n'
             sort -u "$_webi_tmp/.PATH.env"
+            printf "\n"
+
             rm -f "$_webi_tmp/.PATH.env"
+
+            printf "\e[31mTO FINISH\e[0m: copy, paste & run the following command:\n"
+            printf "\n"
+            printf "        \e[34msource ~/.config/envman/PATH.env\e[0m\n"
+            printf "        (newly opened terminal windows will update automatically)\n"
         fi
     fi
 

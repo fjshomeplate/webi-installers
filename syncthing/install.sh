@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-function __init_syncthing() {
+__init_syncthing() {
     set -e
     set -u
 
@@ -20,7 +20,7 @@ function __init_syncthing() {
 
     pkg_install() {
         # $HOME/.local/opt/syncthing-v1.12.1/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./syncthing* "$HOME/.local/opt/syncthing-v1.12.1/bin/syncthing"
         mv ./syncthing*/"$pkg_cmd_name"* "$pkg_src_cmd"
@@ -35,7 +35,7 @@ function __init_syncthing() {
         #       syncthing v1.12.1 "Fermium Flea" (go1.15.5 darwin-amd64) teamcity@build.syncthing.net 2020-12-06 12:46:27 UTC
         # This trims it down to just the version number:
         #       1.12.1
-        echo "$(syncthing --version 2> /dev/null | head -n 1 | cut -d' ' -f2 | sed 's:^v::')"
+        syncthing --version 2> /dev/null | head -n 1 | cut -d' ' -f2 | sed 's:^v::'
     }
 }
 

@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-function __init_vim_syntastic() {
+__init_vim_syntastic() {
     set -e
     set -u
 

@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_arc() {
+__init_arc() {
 
     ####################
     # Install archiver #
@@ -21,7 +21,7 @@ function __init_arc() {
     # pkg_install must be defined by every package
     pkg_install() {
         # ~/.local/opt/arc-v3.2.0/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./arc_* ~/.local/opt/arc-v3.2.0/bin/arc
         mv ./arc_* "$pkg_src_cmd"
@@ -33,7 +33,7 @@ function __init_arc() {
         #       arc v3.5.0 (25e050d) 2020-10-30T03:27:58Z
         # This trims it down to just the version number:
         #       3.5.0
-        echo "$(arc version 2> /dev/null | head -n 1 | cut -d' ' -f2 | sed 's:^v::')"
+        arc version 2> /dev/null | head -n 1 | cut -d' ' -f2 | sed 's:^v::'
     }
 }
 

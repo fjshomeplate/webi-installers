@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
 # shellcheck disable=SC2034
 # "'pkg_cmd_name' appears unused. Verify it or export it."
 
-function __init_foobar() {
+__init_foobar() {
     set -e
     set -u
 

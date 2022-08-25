@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_pandoc() {
+__init_pandoc() {
 
     ###################
     # Install pandoc #
@@ -21,7 +21,7 @@ function __init_pandoc() {
     # pkg_install must be defined by every package
     pkg_install() {
         # ~/.local/opt/pandoc-v2.10.1/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./pandoc-*/pandoc ~/.local/opt/pandoc-v2.10.1/bin/pandoc
         mv ./pandoc-*/bin/pandoc "$pkg_src_cmd"
@@ -40,7 +40,7 @@ function __init_pandoc() {
         # for a particular purpose.
         # This trims it down to just the version number:
         #       2.10.1
-        echo $(pandoc --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2)
+        pandoc --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2
     }
 }
 

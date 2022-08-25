@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __todo_nerdfonts() {
+__todo_nerdfonts() {
     echo "The full Nerd Fonts patcher is not yet available."
     echo "Want the Droid Sans 'nerdfont' in the meantime?"
     echo ""

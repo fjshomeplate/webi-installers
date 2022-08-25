@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-function __init_rclone() {
+__init_rclone() {
     set -e
     set -u
 
@@ -20,7 +20,7 @@ function __init_rclone() {
 
     pkg_install() {
         # $HOME/.local/opt/rclone-v0.6.5/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./rclone* "$HOME/.local/opt/rclone-v0.6.5/bin/rclone"
         mv ./rclone*/rclone "$pkg_src_cmd"
@@ -36,7 +36,7 @@ function __init_rclone() {
         #       - go version: go1.15.7
         # This trims it down to just the version number:
         #       1.54.0
-        echo "$(rclone --version 2> /dev/null | head -n 1 | cut -d' ' -f2 | sed 's:^v::')"
+        rclone --version 2> /dev/null | head -n 1 | cut -d' ' -f2 | sed 's:^v::'
     }
 
 }

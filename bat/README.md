@@ -12,9 +12,9 @@ To update or switch versions, run `webi bat@stable` (or `@v0.18`, `@beta`, etc).
 > `bat` is pretty much what `cat` would be if it were developed today's in the
 > world of Markdown, git, etc.
 
-### How to run on Windows 10
+### How to run on Windows
 
-On Windows 10 you'll get an error like this:
+On Windows you'll get an error like this:
 
 > execution cannot proceed run because vcruntime140.dll was not found
 
@@ -25,14 +25,14 @@ You need to download and install the
 
 Update your `.bashrc`, `.zshrc`, or `.profile`
 
-```bash
+```sh
 alias cat="bat --style=plain"
 ```
 
 For situations in which you must use `cat` exactly, remember that you can escape
 the alias:
 
-```bash
+```sh
 \cat foo
 ```
 
@@ -40,13 +40,13 @@ the alias:
 
 Take a look at the config options:
 
-```bash
+```sh
 bat --help
 ```
 
 Check to see where your config file is:
 
-```bash
+```sh
 echo 'N' | bat --generate-config-file
 ```
 

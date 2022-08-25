@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_rg() {
+__init_rg() {
 
     ###################
     # Install ripgrep #
@@ -21,7 +21,7 @@ function __init_rg() {
     # pkg_install must be defined by every package
     pkg_install() {
         # ~/.local/opt/rg-v12.1.1/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./ripgrep-*/rg ~/.local/opt/rg-v12.1.1/bin/rg
         mv ./ripgrep-*/rg "$pkg_src_cmd"
@@ -35,7 +35,7 @@ function __init_rg() {
         #       +SIMD -AVX (runtime)
         # This trims it down to just the version number:
         #       12.1.1
-        echo $(rg --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2)
+        rg --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2
     }
 }
 

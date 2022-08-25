@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __init_dotenv_linter() {
+__init_dotenv_linter() {
 
     #########################
     # Install dotenv-linter #
@@ -21,7 +21,7 @@ function __init_dotenv_linter() {
     # pkg_install must be defined by every package
     pkg_install() {
         # ~/.local/opt/dotenv-linter-v0.99.9/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./dotenv-linter-*/dotenv-linter ~/.local/opt/dotenv-linter-v0.99.9/bin/dotenv-linter
         mv ./dotenv-linter "$pkg_src_cmd"
@@ -33,7 +33,7 @@ function __init_dotenv_linter() {
         #       dotenv-linter 0.99.9 (rev abcdef0123)
         # This trims it down to just the version number:
         #       0.99.9
-        echo $(dotenv-linter --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2)
+        dotenv-linter --version 2> /dev/null | head -n 1 | cut -d ' ' -f 2
     }
 
 }

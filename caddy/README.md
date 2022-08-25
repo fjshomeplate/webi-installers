@@ -21,11 +21,11 @@ Here's the things we find most useful:
 - Running as a system service on
   - Linux
   - MacOS
-  - Windows 10
+  - Windows
 
 ### How to serve a directory
 
-```bash
+```sh
 caddy file-server --browse --listen :4040
 ```
 
@@ -50,7 +50,9 @@ example.com {
     encode gzip zstd
 
     # reverse proxy /api to :3000
-    reverse_proxy /api/* localhost:3000
+    handle_path /api/* {
+        reverse_proxy localhost:3000
+    }
 
     # reverse proxy some "well known" APIs
     reverse_proxy /.well-known/openid-configuration localhost:3000
@@ -73,11 +75,28 @@ example.com {
 }
 ```
 
-And here's how you run caddy with it:
+### How to rewrite and reverse proxy
 
-```bash
+```txt
+example.com {
+    # ...
+
+    # reverse proxy /api/new/ to http://localhost:3100/api/
+    handle_path /api/new/* {
+        rewrite * /api{path}
+        reverse_proxy localhost:3100
+    }
+}
+```
+
+### How to run caddy
+
+```sh
 caddy run --config ./Caddyfile
 ```
+
+Note: `run` runs in the foreground, `start` starts a service (daemon) in the
+background.
 
 ### How to start Caddy as a Linux service
 
@@ -94,7 +113,7 @@ Using a user named `app` to run your services is common industry convention.
 
 You can use `setcap` to allow Caddy to use privileged ports.
 
-```bash
+```sh
 sudo setcap cap_net_bind_service=+ep $(readlink -f $(command -v caddy))
 ```
 
@@ -105,13 +124,13 @@ start the appropriate systemd launcher for Linux.
 
 Install Serviceman with Webi:
 
-```bash
+```sh
 webi serviceman
 ```
 
 Use Serviceman to create a _systemd_ config file.
 
-```bash
+```sh
 sudo env PATH="$PATH" \
     serviceman add --system --username $(whoami) --name caddy -- \
         caddy run --config ./Caddyfile
@@ -120,7 +139,7 @@ sudo env PATH="$PATH" \
 This will create `/etc/systemd/system/caddy.service`, which can be managed with
 `systemctl`. For example:
 
-```bash
+```sh
 sudo systemctl restart caddy
 ```
 
@@ -137,13 +156,13 @@ start the appropriate service launcher file for MacOS.
 
 Install Serviceman with Webi:
 
-```bash
+```sh
 webi serviceman
 ```
 
 Use Serviceman to create a _launchd_ plist file.
 
-```bash
+```sh
 serviceman add --username $(whoami) --name caddy -- \
     caddy run --config ./Caddyfile
 ```
@@ -151,7 +170,7 @@ serviceman add --username $(whoami) --name caddy -- \
 This will create `~//Library/LaunchAgents/caddy.plist`, which can be managed
 with `launchctl`. For example:
 
-```bash
+```sh
 launchctl unload -w "$HOME/Library/LaunchAgents/caddy.plist"
 launchctl load -w "$HOME/Library/LaunchAgents/caddy.plist"
 ```
@@ -173,24 +192,24 @@ powershell.exe -WindowStyle Hidden -Command $r = Get-NetFirewallRule -DisplayNam
 **Startup Registry**
 
 You can use [Serviceman](https://webinstall.dev/serviceman) to create and start
-the appropriate service launcher for Windows 10.
+the appropriate service launcher for Windows.
 
 Install Serviceman with Webi:
 
-```bash
+```sh
 webi.bat serviceman
 ```
 
 Use Serviceman to create a Startup entry in the Windows Registry:
 
-```bash
+```sh
 serviceman.exe add --name caddy -- \
     caddy run --config ./Caddyfile
 ```
 
 You can manage the service directly with Serviceman. For example:
 
-```bash
+```sh
 serviceman stop caddy
 serviceman start caddy
 ```

@@ -1,34 +1,42 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 set -u
 
-function __get_git_email() {
+__get_git_email() {
     git config --global user.email
     # grep 'email\s*=.*@' ~/.gitconfig | tr -d '\t ' | head -n 1 | cut -d'=' -f2
 }
 
-function __get_pubkey_id() {
+__get_pubkey_id() {
     gpg --list-secret-keys --keyid-format LONG |
         grep sec |
         cut -d'/' -f2 |
         cut -d' ' -f1
 }
 
-function _create_gpg_key() {
-    if [[ ! -e ~/.gitconfig ]]; then
+__shadow_read() {
+    # See https://stackoverflow.com/a/38557313
+    stty -echo
+    IFS= read -r MY_REPLY
+    stty echo
+    echo "$MY_REPLY"
+}
+
+_create_gpg_key() {
+    if [ ! -e ~/.gitconfig ]; then
         return 1
     fi
 
     #grep 'name\s*=' ~/.gitconfig | head -n 1 | cut -d'=' -f2 | sed -e 's/^[\t ]*//'
     MY_NAME="$(git config --global user.name)"
-    if [[ -z ${MY_NAME} ]]; then
+    if [ -z "${MY_NAME}" ]; then
         return 1
     fi
 
     MY_EMAIL="$(
         __get_git_email
     )"
-    if [[ -z ${MY_EMAIL} ]]; then
+    if [ -z "${MY_EMAIL}" ]; then
         return 1
     fi
 
@@ -62,8 +70,8 @@ function _create_gpg_key() {
         echo >&2 "Choose a passphrase for this GPG Key."
         echo >&2 "(the passphrase will not be shown as you type)"
         echo >&2 ""
-        echo >&2 -n "Passphrase: "
-        read -r -s
+        printf >&2 "Passphrase: "
+        MY_REPLY="$(__shadow_read)"
         echo >&2 ""
         echo "
          %echo Generating RSA 3072 key...
@@ -77,7 +85,7 @@ function _create_gpg_key() {
          Name-Real: ${MY_NAME}
          Name-Comment: ${MY_HOST}
          Name-Email: ${MY_EMAIL}
-         Passphrase: ${REPLY}
+         Passphrase: ${MY_REPLY}
          Expire-Date: 0
          %commit
         " | gpg --batch --generate-key

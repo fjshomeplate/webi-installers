@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-function __init_vim_lastplace() {
+__init_vim_lastplace() {
     set -e
     set -u
 

@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-function __init_lf() {
+__init_lf() {
     set -e
     set -u
 
@@ -20,7 +20,7 @@ function __init_lf() {
 
     pkg_install() {
         # $HOME/.local/opt/lf-v0.21.0/bin
-        mkdir -p "$(dirname $pkg_src_cmd)"
+        mkdir -p "$(dirname "$pkg_src_cmd")"
 
         # mv ./lf "$HOME/.local/opt/lf-v0.21.0/bin/lf"
         mv ./lf "$pkg_src_cmd"

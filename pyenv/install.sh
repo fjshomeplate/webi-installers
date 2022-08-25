@@ -1,12 +1,12 @@
-#!/bin/bash
+#!/bin/sh
 
-function __init_pyenv() {
+__init_pyenv() {
     set -e
     set -u
 
     curl -fsSL https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 
-    if [ ! -f ~/.bashrc ] || [ -z "$(grep 'pyenv init' ~/.bashrc)" ]; then
+    if [ ! -f ~/.bashrc ] || ! grep -q 'pyenv init' ~/.bashrc; then
         echo '' >> ~/.bashrc
         echo '# added by Webi for pyenv' >> ~/.bashrc
         echo 'eval "$(pyenv init -)"' >> ~/.bashrc
@@ -15,7 +15,7 @@ function __init_pyenv() {
 
     if [ -n "$(command -v zsh)" ]; then
         touch ~/.zshrc
-        if [ -z "$(grep 'pyenv init' ~/.zshrc)" ]; then
+        if ! grep -q 'pyenv init' ~/.zshrc; then
             echo '' >> ~/.zshrc
             echo '# added by Webi for pyenv' >> ~/.zshrc
             echo 'eval "$(pyenv init -)"' >> ~/.zshrc
@@ -26,11 +26,11 @@ function __init_pyenv() {
     if [ -n "$(command -v fish)" ]; then
         mkdir -p ~/.config/fish
         touch ~/.config/fish/config.fish
-        if [ -z "$(grep 'pyenv init' ~/.config/fish/config.fish)" ]; then
+        if ! grep -q 'pyenv init' ~/.config/fish/config.fish; then
             echo '' >> ~/.config/fish/config.fish
             echo '# added by Webi for pyenv' >> ~/.config/fish/config.fish
-            echo 'pyenv init - | source' >> ~/.config/fish/config.fish
-            echo 'pyenv virtualenv-init - | source' >> ~/.config/fish/config.fish
+            echo 'status is-login; and pyenv init --path | source' >> ~/.config/fish/config.fish
+            echo 'status is-interactive; and pyenv init - | source' >> ~/.config/fish/config.fish
         fi
     fi
 
