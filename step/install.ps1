@@ -1,45 +1,46 @@
-
 #!/usr/bin/env pwsh
 
 ##################
-# Install step #
+# Install foobar #
 ##################
 
 # Every package should define these variables
-$pkg_cmd_name = "step"
+$pkg_cmd_name = "foo"
 
-$pkg_dst_cmd = "$Env:USERPROFILE\.local\bin\step.exe"
+$pkg_dst_cmd = "$Env:USERPROFILE\.local\bin\foo.exe"
 $pkg_dst = "$pkg_dst_cmd"
 
-$pkg_src_cmd = "$Env:USERPROFILE\.local\opt\step-v$Env:WEBI_VERSION\bin\step.exe"
-$pkg_src_bin = "$Env:USERPROFILE\.local\opt\step-v$Env:WEBI_VERSION\bin"
-$pkg_src_dir = "$Env:USERPROFILE\.local\opt\step-v$Env:WEBI_VERSION"
+$pkg_src_cmd = "$Env:USERPROFILE\.local\opt\foobar-v$Env:WEBI_VERSION\bin\foo.exe"
+$pkg_src_bin = "$Env:USERPROFILE\.local\opt\foobar-v$Env:WEBI_VERSION\bin"
+$pkg_src_dir = "$Env:USERPROFILE\.local\opt\foobar-v$Env:WEBI_VERSION"
 $pkg_src = "$pkg_src_cmd"
 
 New-Item "$Env:USERPROFILE\Downloads\webi" -ItemType Directory -Force | out-null
 $pkg_download = "$Env:USERPROFILE\Downloads\webi\$Env:WEBI_PKG_FILE"
+
 # Fetch archive
 IF (!(Test-Path -Path "$Env:USERPROFILE\Downloads\webi\$Env:WEBI_PKG_FILE"))
 {
-    echo "Downloading step from $Env:WEBI_PKG_URL to $pkg_download"
-    & curl.exe -A "$Env:WEBI_UA" -fsSL "$Env:WEBI_PKG_URL" -o "$pkg_download"
-    & move "$pkg_download" "$pkg_download"
+    echo "Downloading foobar from $Env:WEBI_PKG_URL to $pkg_download"
+    & curl.exe -A "$Env:WEBI_UA" -fsSL "$Env:WEBI_PKG_URL" -o "$pkg_download.part"
+    & move "$pkg_download.part" "$pkg_download"
 }
 
 IF (!(Test-Path -Path "$pkg_src_cmd"))
 {
-    echo "Installing step"
+    echo "Installing foobar"
 
     # TODO: create package-specific temp directory
     # Enter tmp
     pushd .local\tmp
 
         # Remove any leftover tmp cruft
-        Remove-Item -Path ".\step-v*" -Recurse -ErrorAction Ignore
-        Remove-Item -Path ".\step.exe" -Recurse -ErrorAction Ignore
+        Remove-Item -Path ".\foobar-v*" -Recurse -ErrorAction Ignore
+        Remove-Item -Path ".\foo.exe" -Recurse -ErrorAction Ignore
 
-
-        # & move "$pkg_download" "step.exe"
+        # NOTE: DELETE THIS COMMENT IF NOT USED
+        # Move single binary into root of temporary folder
+        #& move "$pkg_download" "foo.exe"
 
         # Unpack archive file into this temporary directory
         # Windows BSD-tar handles zip. Imagine that.
@@ -49,7 +50,7 @@ IF (!(Test-Path -Path "$pkg_src_cmd"))
         # Settle unpacked archive into place
         echo "Install Location: $pkg_src_cmd"
         New-Item "$pkg_src_bin" -ItemType Directory -Force | out-null
-        Move-Item -Path ".\step-*\bin\step.exe" -Destination "$pkg_src_bin"
+        Move-Item -Path ".\foobar-*\foo.exe" -Destination "$pkg_src_bin"
 
     # Exit tmp
     popd
